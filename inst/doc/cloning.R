@@ -1,47 +1,58 @@
 ## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
-collapse = TRUE,
-comment = "#>"
+  collapse = TRUE,
+  comment = "#>"
 )
 
 ## ----setup--------------------------------------------------------------------
 library(sortable)
 
-## ---- echo=FALSE--------------------------------------------------------------
-library(htmltools)
-tags$div(
-  class = "shiny-app-frame",
-  tags$iframe(
-    src = "https://andrie-de-vries.shinyapps.io/sortable_drag_vars_to_plot_app/",
-    width = 800,
-    height = 700
-  )
-)
+## ---- eval=FALSE--------------------------------------------------------------
+#  sortable_js(
+#    "sort1"
+#    options = sortable_options(
+#      group = list(
+#        pull = "clone",
+#        name = "sortGroup1",
+#        put = FALSE
+#      ),
+#      onSort = sortable_js_capture_input("sort_vars")
+#    )
+#  )
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  sortable_js(
+#    "sortable_bin",
+#    options = sortable_options(
+#      group = list(
+#        group = "sortGroup1",
+#        put = TRUE,
+#        pull = TRUE
+#      ),
+#      onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
+#    )
+#  )
 
 ## ----echo=FALSE, cache=FALSE--------------------------------------------------
 knitr::read_chunk(
-  system.file("shiny-examples/drag_vars_to_plot/app.R", package = "sortable")
+  system.file("shiny-examples/clone_remove/app.R", package = "sortable")
 )
 
-## ----shiny-drag-vars-to-plot, eval=FALSE--------------------------------------
-#  ## Example shiny app to create a plot from sortable inputs
+## ----shiny-clone-remove, eval=FALSE-------------------------------------------
+#  ## Example shiny app to demonstrate cloning and other sortable_options
 #  
 #  library(shiny)
 #  library(htmlwidgets)
 #  library(sortable)
 #  library(magrittr)
 #  
-#  colnames_to_tags <- function(df){
+#  icon_list <- function(x){
 #    lapply(
-#      colnames(df),
-#      function(co) {
-#        tag(
-#          "p",
-#          list(
-#            class = class(df[, co]),
-#            tags$span(class = "glyphicon glyphicon-move"),
-#            tags$strong(co)
-#          )
+#      x,
+#      function(x) {
+#        tags$div(
+#          icon("arrows-alt-h"),
+#          tags$strong(x)
 #        )
 #      }
 #    )
@@ -53,31 +64,41 @@ knitr::read_chunk(
 #      class = "panel panel-heading",
 #      div(
 #        class = "panel-heading",
-#        h3("Dragging variables to define a plot")
+#        h3("Illustration of sortable_options()")
 #      ),
 #      fluidRow(
 #        class = "panel-body",
 #        column(
-#          width = 3,
+#          width = 4,
 #          tags$div(
 #            class = "panel panel-default",
-#            tags$div(class = "panel-heading", "Variables"),
+#            tags$div(
+#              class = "panel-heading",
+#              icon("arrow-right"),
+#              "Drag from here (items will clone)"
+#            ),
 #            tags$div(
 #              class = "panel-body",
 #              id = "sort1",
-#              colnames_to_tags(mtcars)
+#              icon_list(c(
+#                "A",
+#                "B",
+#                "C",
+#                "D",
+#                "E"
+#              ))
 #            )
 #          )
 #        ),
 #        column(
-#          width = 3,
+#          width = 4,
 #          # analyse as x
 #          tags$div(
 #            class = "panel panel-default",
 #            tags$div(
 #              class = "panel-heading",
-#              tags$span(class = "glyphicon glyphicon-stats"),
-#              "Analyze as x (drag here)"
+#              icon("exchange"),
+#              "To here(max 3 items)"
 #            ),
 #            tags$div(
 #              class = "panel-body",
@@ -89,8 +110,8 @@ knitr::read_chunk(
 #            class = "panel panel-default",
 #            tags$div(
 #              class = "panel-heading",
-#              tags$span(class = "glyphicon glyphicon-stats"),
-#              "Analyze as y (drag here)"
+#              icon("exchange"),
+#              "Or here"
 #            ),
 #            tags$div(
 #              class = "panel-body",
@@ -100,8 +121,20 @@ knitr::read_chunk(
 #  
 #        ),
 #        column(
-#          width = 6,
-#          plotOutput("plot")
+#          width = 4,
+#          # bin
+#          tags$div(
+#            class = "panel panel-default",
+#            tags$div(
+#              class = "panel-heading",
+#              icon("trash"),
+#              "Remove item"
+#            ),
+#            tags$div(
+#              class = "panel-body",
+#              id = "sortable_bin"
+#            )
+#          )
 #  
 #        )
 #      )
@@ -110,10 +143,11 @@ knitr::read_chunk(
 #      "sort1",
 #      options = sortable_options(
 #        group = list(
+#        pull = "clone",
 #          name = "sortGroup1",
-#          put = TRUE
+#          put = FALSE
 #        ),
-#        sort = FALSE,
+#        # swapClass = "sortable-swap-highlight",
 #        onSort = sortable_js_capture_input("sort_vars")
 #      )
 #    ),
@@ -122,9 +156,10 @@ knitr::read_chunk(
 #      options = sortable_options(
 #        group = list(
 #          group = "sortGroup1",
-#          put = htmlwidgets::JS("function (to) { return to.el.children.length < 1; }"),
+#          put = htmlwidgets::JS("function (to) { return to.el.children.length < 3; }"),
 #          pull = TRUE
 #        ),
+#        swapClass = "sortable-swap-highlight",
 #        onSort = sortable_js_capture_input("sort_x")
 #      )
 #    ),
@@ -133,12 +168,25 @@ knitr::read_chunk(
 #      options = sortable_options(
 #        group = list(
 #          group = "sortGroup1",
-#          put = htmlwidgets::JS("function (to) { return to.el.children.length < 1; }"),
+#          put = TRUE,
 #          pull = TRUE
 #        ),
+#        swapClass = "sortable-swap-highlight",
 #        onSort = sortable_js_capture_input("sort_y")
 #      )
+#    ),
+#    sortable_js(
+#      "sortable_bin",
+#      options = sortable_options(
+#        group = list(
+#          group = "sortGroup1",
+#          put = TRUE,
+#          pull = TRUE
+#        ),
+#        onAdd = htmlwidgets::JS("function (evt) { this.el.removeChild(evt.item); }")
+#      )
 #    )
+#  
 #  )
 #  
 #  server <- function(input, output) {
@@ -155,17 +203,6 @@ knitr::read_chunk(
 #    y <- reactive({
 #      input$sort_y %>% trimws()
 #    })
-#  
-#    output$plot <-
-#      renderPlot({
-#        validate(
-#          need(x(), "Drag a variable to x"),
-#          need(y(), "Drag a variable to y")
-#        )
-#        dat <- mtcars[, c(x(), y())]
-#        names(dat) <- c("x", "y")
-#        plot(y ~ x, data = dat, xlab = x(), ylab = y())
-#      })
 #  
 #  }
 #  shinyApp(ui, server)

@@ -1,4 +1,4 @@
-## ----echo = F-----------------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 ## get knitr just the way we like it
 
 knitr::opts_chunk$set(
@@ -7,11 +7,11 @@ knitr::opts_chunk$set(
   error = FALSE,
   tidy = FALSE,
   cache = FALSE
-  # , results = 'asis'
 )
 
 ## -----------------------------------------------------------------------------
 library(sortable)
+library(htmltools)
 
 ## ---- echo=FALSE--------------------------------------------------------------
 sortable_js(css_id = "example01")
@@ -33,24 +33,25 @@ library(base64)
 library(withr)
 
 # use example from ?base64::img
-pngfile_1 <- tempfile()
+pngfile_1 <- tempfile(fileext = ".png")
 with_png(pngfile_1, width = 300, height = 200,{
   plot(1:100, rnorm(100), pch = 21, bg = "red")
   title(main = "Moves Like Jagger")
 })
 
 # make another plot for demo purposes
-pngfile_2 <- tempfile()
+pngfile_2 <- tempfile(fileext = ".png")
 with_png(pngfile_2, width = 300, height = 200,{
   barplot(1:9, col = blues9)
   title(main = "I Like the Way You Move")
 })
 
+## -----------------------------------------------------------------------------
 tagList(
   tags$div(
     id = "example03",
-    HTML(img(pngfile_1)),
-    HTML(img(pngfile_2))
+    HTML(base64::img(pngfile_1)),
+    HTML(base64::img(pngfile_2))
   ),
   sortable_js(css_id = "example03")
 )

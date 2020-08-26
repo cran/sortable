@@ -4,14 +4,19 @@
 \alias{bucket_list}
 \title{Create a bucket list.}
 \usage{
-bucket_list(header = NULL, ..., group_name, group_put_max = rep(Inf,
-  length(labels)), options = sortable_options(),
-  class = "default-sortable", orientation = c("horizontal",
-  "vertical"))
+bucket_list(
+  header = NULL,
+  ...,
+  group_name,
+  group_put_max = rep(Inf, length(labels)),
+  options = sortable_options(),
+  class = "default-sortable",
+  orientation = c("horizontal", "vertical")
+)
 }
 \arguments{
 \item{header}{Text that appears at the top of the bucket list.  (This is
-encoded as an HTML \code{<p>} tag, so not strictly speaking a header.)}
+encoded as an HTML \verb{<p>} tag, so not strictly speaking a header.)}
 
 \item{...}{One or more specifications for a rank list, and must be defined by
 \link{add_rank_list}.}
@@ -37,42 +42,46 @@ A bucket list can contain more than one \link{rank_list} and allows drag-and-dro
 of items between the different lists.
 }
 \examples{
+## -- example-bucket-list ---------------------------------------------
+
+## bucket list
+
+if(interactive()) {
+  bucket_list(
+    header = "This is a bucket list. You can drag items between the lists.",
+    add_rank_list(
+      text = "Drag from here",
+      labels = c("a", "bb", "ccc")
+    ),
+    add_rank_list(
+      text = "to here",
+      labels = NULL
+    )
+  )
+}
+
+## bucket list with three columns
+
+if(interactive()) {
+  bucket_list(
+    header = c("Sort these items into Letters and Numbers"),
+    add_rank_list(
+      text = "Drag from here",
+      labels = sample(c(1:3, letters[1:2]))
+    ),
+    add_rank_list(
+      text = "Letters"
+    ),
+    add_rank_list(
+      text = "Numbers"
+    )
+  )
+}
 ## Example of a shiny app
 if (interactive()) {
   app <- system.file("shiny-examples/bucket_list/app.R", package = "sortable")
   shiny::runApp(app)
 }
-## -- example-bucket-list ---------------------------------------------
-
-## bucket list
-
-bucket_list(
-  header = "This is a bucket list. You can drag items between the lists.",
-  add_rank_list(
-    text = "Drag from here",
-    labels = c("a", "bb", "ccc")
-  ),
-  add_rank_list(
-    text = "to here",
-    labels = NULL
-  )
-)
-
-## bucket list with three columns
-
-bucket_list(
-  header = c("Sort these items into Letters and Numbers"),
-  add_rank_list(
-    text = "Drag from here",
-    labels = sample(c(1:3, letters[1:2]))
-  ),
-  add_rank_list(
-    text = "Letters"
-  ),
-  add_rank_list(
-    text = "Numbers"
-  )
-)
 }
 \seealso{
 rank_list

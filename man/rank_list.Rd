@@ -4,8 +4,14 @@
 \alias{rank_list}
 \title{Create a ranking item list.}
 \usage{
-rank_list(text = "", labels, input_id, css_id = NULL,
-  options = sortable_options(), class = "default-sortable")
+rank_list(
+  text = "",
+  labels,
+  input_id,
+  css_id = NULL,
+  options = sortable_options(),
+  class = "default-sortable"
+)
 }
 \arguments{
 \item{text}{Text to appear at top of list.}
@@ -17,7 +23,7 @@ label or label name will be used to set the shiny \code{input_id} value.}
 \item{input_id}{output variable to read the plot/image from.}
 
 \item{css_id}{This is the css id to use, and must be unique in your shiny
-app. If NULL, the function generates a id of the form
+app. If NULL, the function generates an id of the form
 \code{rank_list_id_1}, and will automatically increment for every \code{rank_list}.}
 
 \item{options}{Options to be supplied to \link{sortable_js} object. See \link{sortable_options} for more details}
@@ -43,19 +49,45 @@ The widget automatically updates a Shiny output, with the matching
 \code{input_id}.
 }
 \examples{
+## - example-rank-list ------------------------------------------------
+
+if (interactive()) {
+  rank_list(
+    text = "You can drag, drap and re-order these items:",
+    labels = c("one", "two", "three", "four", "five"),
+    input_id = "example_2"
+  )
+}
+## - example-rank-list-multidrag ------------------------------------------
+
+if (interactive()) {
+  rank_list(
+    text = "You can select multiple items and drag as a group:",
+    labels = c("one", "two", "three", "four", "five"),
+    input_id = "example_2",
+    options = sortable_options(
+      multiDrag = TRUE
+    )
+  )
+}
+## - example-rank-list-swap -----------------------------------------------
+
+if (interactive()) {
+  rank_list(
+    text = "You can re-order these items, and notice the swapping behaviour:",
+    labels = c("one", "two", "three", "four", "five"),
+    input_id = "example_2",
+    options = sortable_options(
+      swap = TRUE
+    )
+  )
+}
 ## Example of a shiny app
 if (interactive()) {
   app <- system.file("shiny-examples/rank_list/app.R", package = "sortable")
   shiny::runApp(app)
 }
 
-## - example-rank-list ------------------------------------------------
-
-rank_list(
-  text = "You can drag, drap and re-order these items:",
-  labels = c("one", "two", "three", "four", "five"),
-  input_id = "example_2"
-)
 }
 \seealso{
 \link{sortable_js}, \link{bucket_list} and \link{question_rank}

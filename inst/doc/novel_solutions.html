@@ -1,37 +1,64 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
 
 <title>Novel solutions using sortable in shiny apps</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -51,7 +78,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -118,9 +145,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +313,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -405,68 +430,62 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb2-87"><a href="#cb2-87"></a>        <span class="dt">name =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
 <span id="cb2-88"><a href="#cb2-88"></a>        <span class="dt">put =</span> <span class="ot">TRUE</span></span>
 <span id="cb2-89"><a href="#cb2-89"></a>      ),</span>
-<span id="cb2-90"><a href="#cb2-90"></a>      <span class="dt">swap =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-91"><a href="#cb2-91"></a>      <span class="dt">swapClass =</span> <span class="st">&quot;sortable-swap-highlight&quot;</span>,</span>
-<span id="cb2-92"><a href="#cb2-92"></a>      <span class="dt">sort =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb2-93"><a href="#cb2-93"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_vars&quot;</span>)</span>
-<span id="cb2-94"><a href="#cb2-94"></a>    )</span>
-<span id="cb2-95"><a href="#cb2-95"></a>  ),</span>
-<span id="cb2-96"><a href="#cb2-96"></a>  <span class="kw">sortable_js</span>(</span>
-<span id="cb2-97"><a href="#cb2-97"></a>    <span class="st">&quot;sort2&quot;</span>,</span>
-<span id="cb2-98"><a href="#cb2-98"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
-<span id="cb2-99"><a href="#cb2-99"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
-<span id="cb2-100"><a href="#cb2-100"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
-<span id="cb2-101"><a href="#cb2-101"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
-<span id="cb2-102"><a href="#cb2-102"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
-<span id="cb2-103"><a href="#cb2-103"></a>      ),</span>
-<span id="cb2-104"><a href="#cb2-104"></a>      <span class="dt">swap =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-105"><a href="#cb2-105"></a>      <span class="dt">swapClass =</span> <span class="st">&quot;sortable-swap-highlight&quot;</span>,</span>
-<span id="cb2-106"><a href="#cb2-106"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_x&quot;</span>)</span>
-<span id="cb2-107"><a href="#cb2-107"></a>    )</span>
-<span id="cb2-108"><a href="#cb2-108"></a>  ),</span>
-<span id="cb2-109"><a href="#cb2-109"></a>  <span class="kw">sortable_js</span>(</span>
-<span id="cb2-110"><a href="#cb2-110"></a>    <span class="st">&quot;sort3&quot;</span>,</span>
-<span id="cb2-111"><a href="#cb2-111"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
-<span id="cb2-112"><a href="#cb2-112"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
-<span id="cb2-113"><a href="#cb2-113"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
-<span id="cb2-114"><a href="#cb2-114"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
-<span id="cb2-115"><a href="#cb2-115"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
-<span id="cb2-116"><a href="#cb2-116"></a>      ),</span>
-<span id="cb2-117"><a href="#cb2-117"></a>        <span class="dt">swap =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb2-118"><a href="#cb2-118"></a>      <span class="dt">swapClass =</span> <span class="st">&quot;sortable-swap-highlight&quot;</span>,</span>
-<span id="cb2-119"><a href="#cb2-119"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_y&quot;</span>)</span>
-<span id="cb2-120"><a href="#cb2-120"></a>    )</span>
-<span id="cb2-121"><a href="#cb2-121"></a>  )</span>
-<span id="cb2-122"><a href="#cb2-122"></a>)</span>
+<span id="cb2-90"><a href="#cb2-90"></a>      <span class="dt">sort =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb2-91"><a href="#cb2-91"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_vars&quot;</span>)</span>
+<span id="cb2-92"><a href="#cb2-92"></a>    )</span>
+<span id="cb2-93"><a href="#cb2-93"></a>  ),</span>
+<span id="cb2-94"><a href="#cb2-94"></a>  <span class="kw">sortable_js</span>(</span>
+<span id="cb2-95"><a href="#cb2-95"></a>    <span class="st">&quot;sort2&quot;</span>,</span>
+<span id="cb2-96"><a href="#cb2-96"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
+<span id="cb2-97"><a href="#cb2-97"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
+<span id="cb2-98"><a href="#cb2-98"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
+<span id="cb2-99"><a href="#cb2-99"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
+<span id="cb2-100"><a href="#cb2-100"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
+<span id="cb2-101"><a href="#cb2-101"></a>      ),</span>
+<span id="cb2-102"><a href="#cb2-102"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_x&quot;</span>)</span>
+<span id="cb2-103"><a href="#cb2-103"></a>    )</span>
+<span id="cb2-104"><a href="#cb2-104"></a>  ),</span>
+<span id="cb2-105"><a href="#cb2-105"></a>  <span class="kw">sortable_js</span>(</span>
+<span id="cb2-106"><a href="#cb2-106"></a>    <span class="st">&quot;sort3&quot;</span>,</span>
+<span id="cb2-107"><a href="#cb2-107"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
+<span id="cb2-108"><a href="#cb2-108"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
+<span id="cb2-109"><a href="#cb2-109"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
+<span id="cb2-110"><a href="#cb2-110"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
+<span id="cb2-111"><a href="#cb2-111"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
+<span id="cb2-112"><a href="#cb2-112"></a>      ),</span>
+<span id="cb2-113"><a href="#cb2-113"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_y&quot;</span>)</span>
+<span id="cb2-114"><a href="#cb2-114"></a>    )</span>
+<span id="cb2-115"><a href="#cb2-115"></a>  )</span>
+<span id="cb2-116"><a href="#cb2-116"></a>)</span>
+<span id="cb2-117"><a href="#cb2-117"></a></span>
+<span id="cb2-118"><a href="#cb2-118"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
+<span id="cb2-119"><a href="#cb2-119"></a>  output<span class="op">$</span>variables &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_vars&quot;</span>]])</span>
+<span id="cb2-120"><a href="#cb2-120"></a>  output<span class="op">$</span>analyse_x &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_x&quot;</span>]])</span>
+<span id="cb2-121"><a href="#cb2-121"></a>  output<span class="op">$</span>analyse_y &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_y&quot;</span>]])</span>
+<span id="cb2-122"><a href="#cb2-122"></a></span>
 <span id="cb2-123"><a href="#cb2-123"></a></span>
-<span id="cb2-124"><a href="#cb2-124"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
-<span id="cb2-125"><a href="#cb2-125"></a>  output<span class="op">$</span>variables &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_vars&quot;</span>]])</span>
-<span id="cb2-126"><a href="#cb2-126"></a>  output<span class="op">$</span>analyse_x &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_x&quot;</span>]])</span>
-<span id="cb2-127"><a href="#cb2-127"></a>  output<span class="op">$</span>analyse_y &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_y&quot;</span>]])</span>
+<span id="cb2-124"><a href="#cb2-124"></a>  x &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
+<span id="cb2-125"><a href="#cb2-125"></a>    x &lt;-<span class="st"> </span>input<span class="op">$</span>sort_x</span>
+<span id="cb2-126"><a href="#cb2-126"></a>    <span class="cf">if</span> (<span class="kw">is.character</span>(x)) x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
+<span id="cb2-127"><a href="#cb2-127"></a>  })</span>
 <span id="cb2-128"><a href="#cb2-128"></a></span>
-<span id="cb2-129"><a href="#cb2-129"></a></span>
-<span id="cb2-130"><a href="#cb2-130"></a>  x &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
-<span id="cb2-131"><a href="#cb2-131"></a>    x &lt;-<span class="st"> </span>input<span class="op">$</span>sort_x</span>
-<span id="cb2-132"><a href="#cb2-132"></a>    <span class="cf">if</span> (<span class="kw">is.character</span>(x)) x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
-<span id="cb2-133"><a href="#cb2-133"></a>  })</span>
-<span id="cb2-134"><a href="#cb2-134"></a></span>
-<span id="cb2-135"><a href="#cb2-135"></a>  y &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
-<span id="cb2-136"><a href="#cb2-136"></a>    input<span class="op">$</span>sort_y <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
-<span id="cb2-137"><a href="#cb2-137"></a>  })</span>
-<span id="cb2-138"><a href="#cb2-138"></a></span>
-<span id="cb2-139"><a href="#cb2-139"></a>  output<span class="op">$</span>plot &lt;-</span>
-<span id="cb2-140"><a href="#cb2-140"></a><span class="st">    </span><span class="kw">renderPlot</span>({</span>
-<span id="cb2-141"><a href="#cb2-141"></a>      <span class="kw">validate</span>(</span>
-<span id="cb2-142"><a href="#cb2-142"></a>        <span class="kw">need</span>(<span class="kw">x</span>(), <span class="st">&quot;Drag a variable to x&quot;</span>),</span>
-<span id="cb2-143"><a href="#cb2-143"></a>        <span class="kw">need</span>(<span class="kw">y</span>(), <span class="st">&quot;Drag a variable to y&quot;</span>)</span>
-<span id="cb2-144"><a href="#cb2-144"></a>      )</span>
-<span id="cb2-145"><a href="#cb2-145"></a>      dat &lt;-<span class="st"> </span>mtcars[, <span class="kw">c</span>(<span class="kw">x</span>(), <span class="kw">y</span>())]</span>
-<span id="cb2-146"><a href="#cb2-146"></a>      <span class="kw">names</span>(dat) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
-<span id="cb2-147"><a href="#cb2-147"></a>      <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> dat, <span class="dt">xlab =</span> <span class="kw">x</span>(), <span class="dt">ylab =</span> <span class="kw">y</span>())</span>
-<span id="cb2-148"><a href="#cb2-148"></a>    })</span>
-<span id="cb2-149"><a href="#cb2-149"></a></span>
-<span id="cb2-150"><a href="#cb2-150"></a>}</span>
-<span id="cb2-151"><a href="#cb2-151"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
+<span id="cb2-129"><a href="#cb2-129"></a>  y &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
+<span id="cb2-130"><a href="#cb2-130"></a>    input<span class="op">$</span>sort_y <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
+<span id="cb2-131"><a href="#cb2-131"></a>  })</span>
+<span id="cb2-132"><a href="#cb2-132"></a></span>
+<span id="cb2-133"><a href="#cb2-133"></a>  output<span class="op">$</span>plot &lt;-</span>
+<span id="cb2-134"><a href="#cb2-134"></a><span class="st">    </span><span class="kw">renderPlot</span>({</span>
+<span id="cb2-135"><a href="#cb2-135"></a>      <span class="kw">validate</span>(</span>
+<span id="cb2-136"><a href="#cb2-136"></a>        <span class="kw">need</span>(<span class="kw">x</span>(), <span class="st">&quot;Drag a variable to x&quot;</span>),</span>
+<span id="cb2-137"><a href="#cb2-137"></a>        <span class="kw">need</span>(<span class="kw">y</span>(), <span class="st">&quot;Drag a variable to y&quot;</span>)</span>
+<span id="cb2-138"><a href="#cb2-138"></a>      )</span>
+<span id="cb2-139"><a href="#cb2-139"></a>      dat &lt;-<span class="st"> </span>mtcars[, <span class="kw">c</span>(<span class="kw">x</span>(), <span class="kw">y</span>())]</span>
+<span id="cb2-140"><a href="#cb2-140"></a>      <span class="kw">names</span>(dat) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb2-141"><a href="#cb2-141"></a>      <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> dat, <span class="dt">xlab =</span> <span class="kw">x</span>(), <span class="dt">ylab =</span> <span class="kw">y</span>())</span>
+<span id="cb2-142"><a href="#cb2-142"></a>    })</span>
+<span id="cb2-143"><a href="#cb2-143"></a></span>
+<span id="cb2-144"><a href="#cb2-144"></a>}</span>
+<span id="cb2-145"><a href="#cb2-145"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
 </div>
 
 
