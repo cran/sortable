@@ -27,22 +27,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -331,7 +315,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sortable)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(sortable)</span></code></pre></div>
 <div id="creating-an-app" class="section level2">
 <h2>Creating an app</h2>
 <p>This example demonstrates how to use custom sortable widgets with any shiny object.</p>
@@ -341,151 +325,151 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="source-code" class="section level2">
 <h2>Source code</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">## Example shiny app to create a plot from sortable inputs</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">library</span>(shiny)</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="kw">library</span>(htmlwidgets)</span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">library</span>(sortable)</span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">library</span>(magrittr)</span>
-<span id="cb2-7"><a href="#cb2-7"></a></span>
-<span id="cb2-8"><a href="#cb2-8"></a>colnames_to_tags &lt;-<span class="st"> </span><span class="cf">function</span>(df){</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  <span class="kw">lapply</span>(</span>
-<span id="cb2-10"><a href="#cb2-10"></a>    <span class="kw">colnames</span>(df),</span>
-<span id="cb2-11"><a href="#cb2-11"></a>    <span class="cf">function</span>(co) {</span>
-<span id="cb2-12"><a href="#cb2-12"></a>      <span class="kw">tag</span>(</span>
-<span id="cb2-13"><a href="#cb2-13"></a>        <span class="st">&quot;p&quot;</span>,</span>
-<span id="cb2-14"><a href="#cb2-14"></a>        <span class="kw">list</span>(</span>
-<span id="cb2-15"><a href="#cb2-15"></a>          <span class="dt">class =</span> <span class="kw">class</span>(df[, co]),</span>
-<span id="cb2-16"><a href="#cb2-16"></a>          tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-move&quot;</span>),</span>
-<span id="cb2-17"><a href="#cb2-17"></a>          tags<span class="op">$</span><span class="kw">strong</span>(co)</span>
-<span id="cb2-18"><a href="#cb2-18"></a>        )</span>
-<span id="cb2-19"><a href="#cb2-19"></a>      )</span>
-<span id="cb2-20"><a href="#cb2-20"></a>    }</span>
-<span id="cb2-21"><a href="#cb2-21"></a>  )</span>
-<span id="cb2-22"><a href="#cb2-22"></a>}</span>
-<span id="cb2-23"><a href="#cb2-23"></a></span>
-<span id="cb2-24"><a href="#cb2-24"></a></span>
-<span id="cb2-25"><a href="#cb2-25"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
-<span id="cb2-26"><a href="#cb2-26"></a>  <span class="kw">fluidRow</span>(</span>
-<span id="cb2-27"><a href="#cb2-27"></a>    <span class="dt">class =</span> <span class="st">&quot;panel panel-heading&quot;</span>,</span>
-<span id="cb2-28"><a href="#cb2-28"></a>    <span class="kw">div</span>(</span>
-<span id="cb2-29"><a href="#cb2-29"></a>      <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>      <span class="kw">h3</span>(<span class="st">&quot;Dragging variables to define a plot&quot;</span>)</span>
-<span id="cb2-31"><a href="#cb2-31"></a>    ),</span>
-<span id="cb2-32"><a href="#cb2-32"></a>    <span class="kw">fluidRow</span>(</span>
-<span id="cb2-33"><a href="#cb2-33"></a>      <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
-<span id="cb2-34"><a href="#cb2-34"></a>      <span class="kw">column</span>(</span>
-<span id="cb2-35"><a href="#cb2-35"></a>        <span class="dt">width =</span> <span class="dv">3</span>,</span>
-<span id="cb2-36"><a href="#cb2-36"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-37"><a href="#cb2-37"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
-<span id="cb2-38"><a href="#cb2-38"></a>          tags<span class="op">$</span><span class="kw">div</span>(<span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>, <span class="st">&quot;Variables&quot;</span>),</span>
-<span id="cb2-39"><a href="#cb2-39"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-40"><a href="#cb2-40"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
-<span id="cb2-41"><a href="#cb2-41"></a>            <span class="dt">id =</span> <span class="st">&quot;sort1&quot;</span>,</span>
-<span id="cb2-42"><a href="#cb2-42"></a>            <span class="kw">colnames_to_tags</span>(mtcars)</span>
-<span id="cb2-43"><a href="#cb2-43"></a>          )</span>
-<span id="cb2-44"><a href="#cb2-44"></a>        )</span>
-<span id="cb2-45"><a href="#cb2-45"></a>      ),</span>
-<span id="cb2-46"><a href="#cb2-46"></a>      <span class="kw">column</span>(</span>
-<span id="cb2-47"><a href="#cb2-47"></a>        <span class="dt">width =</span> <span class="dv">3</span>,</span>
-<span id="cb2-48"><a href="#cb2-48"></a>        <span class="co"># analyse as x</span></span>
-<span id="cb2-49"><a href="#cb2-49"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-50"><a href="#cb2-50"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
-<span id="cb2-51"><a href="#cb2-51"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-52"><a href="#cb2-52"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
-<span id="cb2-53"><a href="#cb2-53"></a>            tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-stats&quot;</span>),</span>
-<span id="cb2-54"><a href="#cb2-54"></a>            <span class="st">&quot;Analyze as x (drag here)&quot;</span></span>
-<span id="cb2-55"><a href="#cb2-55"></a>          ),</span>
-<span id="cb2-56"><a href="#cb2-56"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-57"><a href="#cb2-57"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
-<span id="cb2-58"><a href="#cb2-58"></a>            <span class="dt">id =</span> <span class="st">&quot;sort2&quot;</span></span>
-<span id="cb2-59"><a href="#cb2-59"></a>          )</span>
-<span id="cb2-60"><a href="#cb2-60"></a>        ),</span>
-<span id="cb2-61"><a href="#cb2-61"></a>        <span class="co"># analyse as y</span></span>
-<span id="cb2-62"><a href="#cb2-62"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-63"><a href="#cb2-63"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
-<span id="cb2-64"><a href="#cb2-64"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-65"><a href="#cb2-65"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
-<span id="cb2-66"><a href="#cb2-66"></a>            tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-stats&quot;</span>),</span>
-<span id="cb2-67"><a href="#cb2-67"></a>            <span class="st">&quot;Analyze as y (drag here)&quot;</span></span>
-<span id="cb2-68"><a href="#cb2-68"></a>          ),</span>
-<span id="cb2-69"><a href="#cb2-69"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
-<span id="cb2-70"><a href="#cb2-70"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
-<span id="cb2-71"><a href="#cb2-71"></a>            <span class="dt">id =</span> <span class="st">&quot;sort3&quot;</span></span>
-<span id="cb2-72"><a href="#cb2-72"></a>          )</span>
-<span id="cb2-73"><a href="#cb2-73"></a>        )</span>
-<span id="cb2-74"><a href="#cb2-74"></a></span>
-<span id="cb2-75"><a href="#cb2-75"></a>      ),</span>
-<span id="cb2-76"><a href="#cb2-76"></a>      <span class="kw">column</span>(</span>
-<span id="cb2-77"><a href="#cb2-77"></a>        <span class="dt">width =</span> <span class="dv">6</span>,</span>
-<span id="cb2-78"><a href="#cb2-78"></a>        <span class="kw">plotOutput</span>(<span class="st">&quot;plot&quot;</span>)</span>
-<span id="cb2-79"><a href="#cb2-79"></a></span>
-<span id="cb2-80"><a href="#cb2-80"></a>      )</span>
-<span id="cb2-81"><a href="#cb2-81"></a>    )</span>
-<span id="cb2-82"><a href="#cb2-82"></a>  ),</span>
-<span id="cb2-83"><a href="#cb2-83"></a>  <span class="kw">sortable_js</span>(</span>
-<span id="cb2-84"><a href="#cb2-84"></a>    <span class="st">&quot;sort1&quot;</span>,</span>
-<span id="cb2-85"><a href="#cb2-85"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
-<span id="cb2-86"><a href="#cb2-86"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
-<span id="cb2-87"><a href="#cb2-87"></a>        <span class="dt">name =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
-<span id="cb2-88"><a href="#cb2-88"></a>        <span class="dt">put =</span> <span class="ot">TRUE</span></span>
-<span id="cb2-89"><a href="#cb2-89"></a>      ),</span>
-<span id="cb2-90"><a href="#cb2-90"></a>      <span class="dt">sort =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb2-91"><a href="#cb2-91"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_vars&quot;</span>)</span>
-<span id="cb2-92"><a href="#cb2-92"></a>    )</span>
-<span id="cb2-93"><a href="#cb2-93"></a>  ),</span>
-<span id="cb2-94"><a href="#cb2-94"></a>  <span class="kw">sortable_js</span>(</span>
-<span id="cb2-95"><a href="#cb2-95"></a>    <span class="st">&quot;sort2&quot;</span>,</span>
-<span id="cb2-96"><a href="#cb2-96"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
-<span id="cb2-97"><a href="#cb2-97"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
-<span id="cb2-98"><a href="#cb2-98"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
-<span id="cb2-99"><a href="#cb2-99"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
-<span id="cb2-100"><a href="#cb2-100"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
-<span id="cb2-101"><a href="#cb2-101"></a>      ),</span>
-<span id="cb2-102"><a href="#cb2-102"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_x&quot;</span>)</span>
-<span id="cb2-103"><a href="#cb2-103"></a>    )</span>
-<span id="cb2-104"><a href="#cb2-104"></a>  ),</span>
-<span id="cb2-105"><a href="#cb2-105"></a>  <span class="kw">sortable_js</span>(</span>
-<span id="cb2-106"><a href="#cb2-106"></a>    <span class="st">&quot;sort3&quot;</span>,</span>
-<span id="cb2-107"><a href="#cb2-107"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
-<span id="cb2-108"><a href="#cb2-108"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
-<span id="cb2-109"><a href="#cb2-109"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
-<span id="cb2-110"><a href="#cb2-110"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
-<span id="cb2-111"><a href="#cb2-111"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
-<span id="cb2-112"><a href="#cb2-112"></a>      ),</span>
-<span id="cb2-113"><a href="#cb2-113"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_y&quot;</span>)</span>
-<span id="cb2-114"><a href="#cb2-114"></a>    )</span>
-<span id="cb2-115"><a href="#cb2-115"></a>  )</span>
-<span id="cb2-116"><a href="#cb2-116"></a>)</span>
-<span id="cb2-117"><a href="#cb2-117"></a></span>
-<span id="cb2-118"><a href="#cb2-118"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
-<span id="cb2-119"><a href="#cb2-119"></a>  output<span class="op">$</span>variables &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_vars&quot;</span>]])</span>
-<span id="cb2-120"><a href="#cb2-120"></a>  output<span class="op">$</span>analyse_x &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_x&quot;</span>]])</span>
-<span id="cb2-121"><a href="#cb2-121"></a>  output<span class="op">$</span>analyse_y &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_y&quot;</span>]])</span>
-<span id="cb2-122"><a href="#cb2-122"></a></span>
-<span id="cb2-123"><a href="#cb2-123"></a></span>
-<span id="cb2-124"><a href="#cb2-124"></a>  x &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
-<span id="cb2-125"><a href="#cb2-125"></a>    x &lt;-<span class="st"> </span>input<span class="op">$</span>sort_x</span>
-<span id="cb2-126"><a href="#cb2-126"></a>    <span class="cf">if</span> (<span class="kw">is.character</span>(x)) x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
-<span id="cb2-127"><a href="#cb2-127"></a>  })</span>
-<span id="cb2-128"><a href="#cb2-128"></a></span>
-<span id="cb2-129"><a href="#cb2-129"></a>  y &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
-<span id="cb2-130"><a href="#cb2-130"></a>    input<span class="op">$</span>sort_y <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
-<span id="cb2-131"><a href="#cb2-131"></a>  })</span>
-<span id="cb2-132"><a href="#cb2-132"></a></span>
-<span id="cb2-133"><a href="#cb2-133"></a>  output<span class="op">$</span>plot &lt;-</span>
-<span id="cb2-134"><a href="#cb2-134"></a><span class="st">    </span><span class="kw">renderPlot</span>({</span>
-<span id="cb2-135"><a href="#cb2-135"></a>      <span class="kw">validate</span>(</span>
-<span id="cb2-136"><a href="#cb2-136"></a>        <span class="kw">need</span>(<span class="kw">x</span>(), <span class="st">&quot;Drag a variable to x&quot;</span>),</span>
-<span id="cb2-137"><a href="#cb2-137"></a>        <span class="kw">need</span>(<span class="kw">y</span>(), <span class="st">&quot;Drag a variable to y&quot;</span>)</span>
-<span id="cb2-138"><a href="#cb2-138"></a>      )</span>
-<span id="cb2-139"><a href="#cb2-139"></a>      dat &lt;-<span class="st"> </span>mtcars[, <span class="kw">c</span>(<span class="kw">x</span>(), <span class="kw">y</span>())]</span>
-<span id="cb2-140"><a href="#cb2-140"></a>      <span class="kw">names</span>(dat) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
-<span id="cb2-141"><a href="#cb2-141"></a>      <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> dat, <span class="dt">xlab =</span> <span class="kw">x</span>(), <span class="dt">ylab =</span> <span class="kw">y</span>())</span>
-<span id="cb2-142"><a href="#cb2-142"></a>    })</span>
-<span id="cb2-143"><a href="#cb2-143"></a></span>
-<span id="cb2-144"><a href="#cb2-144"></a>}</span>
-<span id="cb2-145"><a href="#cb2-145"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co">## Example shiny app to create a plot from sortable inputs</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="kw">library</span>(shiny)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="kw">library</span>(htmlwidgets)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="kw">library</span>(sortable)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="kw">library</span>(magrittr)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>colnames_to_tags &lt;-<span class="st"> </span><span class="cf">function</span>(df){</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>  <span class="kw">lapply</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a>    <span class="kw">colnames</span>(df),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a>    <span class="cf">function</span>(co) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>      <span class="kw">tag</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a>        <span class="st">&quot;p&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a>        <span class="kw">list</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a>          <span class="dt">class =</span> <span class="kw">class</span>(df[, co]),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-move&quot;</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">strong</span>(co)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a>        )</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a>      )</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a>    }</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a>  )</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a>}</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true"></a>  <span class="kw">fluidRow</span>(</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true"></a>    <span class="dt">class =</span> <span class="st">&quot;panel panel-heading&quot;</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true"></a>    <span class="kw">div</span>(</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true"></a>      <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true"></a>      <span class="kw">h3</span>(<span class="st">&quot;Dragging variables to define a plot&quot;</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true"></a>    ),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a>    <span class="kw">fluidRow</span>(</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true"></a>      <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true"></a>      <span class="kw">column</span>(</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a>        <span class="dt">width =</span> <span class="dv">3</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(<span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>, <span class="st">&quot;Variables&quot;</span>),</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true"></a>            <span class="dt">id =</span> <span class="st">&quot;sort1&quot;</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true"></a>            <span class="kw">colnames_to_tags</span>(mtcars)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true"></a>          )</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true"></a>        )</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true"></a>      ),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true"></a>      <span class="kw">column</span>(</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true"></a>        <span class="dt">width =</span> <span class="dv">3</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true"></a>        <span class="co"># analyse as x</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true"></a>            tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-stats&quot;</span>),</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true"></a>            <span class="st">&quot;Analyze as x (drag here)&quot;</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true"></a>          ),</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true"></a>            <span class="dt">id =</span> <span class="st">&quot;sort2&quot;</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true"></a>          )</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true"></a>        ),</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true"></a>        <span class="co"># analyse as y</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true"></a>        tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true"></a>          <span class="dt">class =</span> <span class="st">&quot;panel panel-default&quot;</span>,</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-heading&quot;</span>,</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true"></a>            tags<span class="op">$</span><span class="kw">span</span>(<span class="dt">class =</span> <span class="st">&quot;glyphicon glyphicon-stats&quot;</span>),</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true"></a>            <span class="st">&quot;Analyze as y (drag here)&quot;</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true"></a>          ),</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true"></a>          tags<span class="op">$</span><span class="kw">div</span>(</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true"></a>            <span class="dt">class =</span> <span class="st">&quot;panel-body&quot;</span>,</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true"></a>            <span class="dt">id =</span> <span class="st">&quot;sort3&quot;</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true"></a>          )</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true"></a>        )</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true"></a>      ),</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true"></a>      <span class="kw">column</span>(</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true"></a>        <span class="dt">width =</span> <span class="dv">6</span>,</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true"></a>        <span class="kw">plotOutput</span>(<span class="st">&quot;plot&quot;</span>)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true"></a>      )</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true"></a>    )</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true"></a>  ),</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true"></a>  <span class="kw">sortable_js</span>(</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true"></a>    <span class="st">&quot;sort1&quot;</span>,</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true"></a>        <span class="dt">name =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true"></a>        <span class="dt">put =</span> <span class="ot">TRUE</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true"></a>      ),</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true"></a>      <span class="dt">sort =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_vars&quot;</span>)</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true"></a>    )</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true"></a>  ),</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true"></a>  <span class="kw">sortable_js</span>(</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true"></a>    <span class="st">&quot;sort2&quot;</span>,</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true"></a>      ),</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_x&quot;</span>)</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true"></a>    )</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true"></a>  ),</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true"></a>  <span class="kw">sortable_js</span>(</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true"></a>    <span class="st">&quot;sort3&quot;</span>,</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true"></a>    <span class="dt">options =</span> <span class="kw">sortable_options</span>(</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true"></a>      <span class="dt">group =</span> <span class="kw">list</span>(</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true"></a>        <span class="dt">group =</span> <span class="st">&quot;sortGroup1&quot;</span>,</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true"></a>        <span class="dt">put =</span> htmlwidgets<span class="op">::</span><span class="kw">JS</span>(<span class="st">&quot;function (to) { return to.el.children.length &lt; 1; }&quot;</span>),</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true"></a>        <span class="dt">pull =</span> <span class="ot">TRUE</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true"></a>      ),</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true"></a>      <span class="dt">onSort =</span> <span class="kw">sortable_js_capture_input</span>(<span class="st">&quot;sort_y&quot;</span>)</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true"></a>    )</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true"></a>  )</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true"></a>)</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true"></a></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true"></a>  output<span class="op">$</span>variables &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_vars&quot;</span>]])</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true"></a>  output<span class="op">$</span>analyse_x &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_x&quot;</span>]])</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true"></a>  output<span class="op">$</span>analyse_y &lt;-<span class="st"> </span><span class="kw">renderPrint</span>(input[[<span class="st">&quot;sort_y&quot;</span>]])</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true"></a></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true"></a></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true"></a>  x &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true"></a>    x &lt;-<span class="st"> </span>input<span class="op">$</span>sort_x</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true"></a>    <span class="cf">if</span> (<span class="kw">is.character</span>(x)) x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true"></a>  })</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true"></a></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true"></a>  y &lt;-<span class="st"> </span><span class="kw">reactive</span>({</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true"></a>    input<span class="op">$</span>sort_y <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">trimws</span>()</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true"></a>  })</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true"></a></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true"></a>  output<span class="op">$</span>plot &lt;-</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true"></a><span class="st">    </span><span class="kw">renderPlot</span>({</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true"></a>      <span class="kw">validate</span>(</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true"></a>        <span class="kw">need</span>(<span class="kw">x</span>(), <span class="st">&quot;Drag a variable to x&quot;</span>),</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true"></a>        <span class="kw">need</span>(<span class="kw">y</span>(), <span class="st">&quot;Drag a variable to y&quot;</span>)</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true"></a>      )</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true"></a>      dat &lt;-<span class="st"> </span>mtcars[, <span class="kw">c</span>(<span class="kw">x</span>(), <span class="kw">y</span>())]</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true"></a>      <span class="kw">names</span>(dat) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true"></a>      <span class="kw">plot</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> dat, <span class="dt">xlab =</span> <span class="kw">x</span>(), <span class="dt">ylab =</span> <span class="kw">y</span>())</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true"></a>    })</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true"></a></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true"></a>}</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
 </div>
 
 

@@ -1,7 +1,7 @@
 Type: Package
 Package: sortable
 Title: Drag-and-Drop in 'shiny' Apps with 'SortableJS'
-Version: 0.4.3
+Version: 0.4.4
 Authors@R: 
     c(person(given = "Andrie",
              family = "de Vries",
@@ -34,15 +34,14 @@ BugReports: https://github.com/rstudio/sortable/issues
 Imports: htmltools, htmlwidgets, learnr (>= 0.10.0), shiny, assertthat,
         jsonlite, utils, ellipsis
 Suggests: base64, knitr, testthat (>= 2.1.0), withr, rmarkdown,
-        magrittr, lifecycle, webshot, spelling, covr
+        magrittr, webshot, spelling, covr
 VignetteBuilder: knitr
-RdMacros: lifecycle
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 7.1.1
 Language: en-US
 NeedsCompilation: no
-Packaged: 2020-08-25 07:01:57 UTC; apdev
+Packaged: 2020-09-17 16:58:18 UTC; apdev
 Author: Andrie de Vries [cre, aut],
   Barret Schloerke [aut],
   Kenton Russell [aut, ccp] (Original author),
@@ -51,4 +50,4 @@ Author: Andrie de Vries [cre, aut],
     https://sortablejs.github.io/Sortable/)
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-08-26 16:10:16 UTC
+Date/Publication: 2020-09-17 18:00:03 UTC

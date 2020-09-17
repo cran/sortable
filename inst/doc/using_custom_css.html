@@ -27,22 +27,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -331,29 +315,29 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(sortable)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(sortable)</span></code></pre></div>
 <div id="using-custom-styles" class="section level2">
 <h2>Using custom styles</h2>
 <p>Sometimes you want to take control of the styling of your app, e.g. changing colours or sizes.</p>
 <p>The functions <code>rank_list()</code> and <code>bucket_list()</code> allows you to set a custom CSS class, and you can then define your own CSS rules that modifies your shiny app.</p>
 <p>The default CSS style for a rank list is <code>default-sortable</code>, but you can specify your own class by modifying the <code>class</code> argument.</p>
 <p>For example, to add <code>custom-sortable</code> to the CSS class, use:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">rank_list</span>(</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;default-sortable&quot;</span>, <span class="st">&quot;custom-sortable&quot;</span>), <span class="co"># add custom style</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a>  ...</span>
-<span id="cb2-4"><a href="#cb2-4"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">rank_list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;default-sortable&quot;</span>, <span class="st">&quot;custom-sortable&quot;</span>), <span class="co"># add custom style</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>  ...</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Then you can use any of the standard techniques to <a href="https://shiny.rstudio.com/articles/css.html">Style your apps with CSS</a> to modify your styling.</p>
 <p>For example, to modify the <code>custom-sortable</code> class using a <code>shiny</code> tag, use:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>tags<span class="op">$</span><span class="kw">style</span>(</span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="kw">HTML</span>(<span class="st">&quot;</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="st">    .rank-list-container.custom-sortable {</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="st">      background-color: #8A8;</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="st">    }</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="st">    .custom-sortable .rank-list-item {</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="st">      background-color: #BDB;</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="st">    }</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="st">  &quot;</span>)</span>
-<span id="cb3-10"><a href="#cb3-10"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>tags<span class="op">$</span><span class="kw">style</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>  <span class="kw">HTML</span>(<span class="st">&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="st">    .rank-list-container.custom-sortable {</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="st">      background-color: #8A8;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="st">    }</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="st">    .custom-sortable .rank-list-item {</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="st">      background-color: #BDB;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="st">    }</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="st">  &quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>)</span></code></pre></div>
 <p>This app contains a fully worked example that turns the background colours of the <code>rank_list</code> into shades of green:</p>
 <div class="shiny-app-frame">
 <iframe src="https://andrie-de-vries.shinyapps.io/sortable_custom_css_app/" width="100%" height="450"></iframe>
@@ -361,51 +345,51 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="source-code" class="section level2">
 <h2>Source code</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">## Example shiny app with custom css</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">library</span>(shiny)</span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">library</span>(sortable)</span>
-<span id="cb4-5"><a href="#cb4-5"></a></span>
-<span id="cb4-6"><a href="#cb4-6"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
-<span id="cb4-7"><a href="#cb4-7"></a>  <span class="kw">fluidRow</span>(</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="kw">column</span>(</span>
-<span id="cb4-9"><a href="#cb4-9"></a>      <span class="dt">width =</span> <span class="dv">12</span>,</span>
-<span id="cb4-10"><a href="#cb4-10"></a>      tags<span class="op">$</span><span class="kw">b</span>(<span class="st">&quot;Exercise&quot;</span>),</span>
-<span id="cb4-11"><a href="#cb4-11"></a>      <span class="kw">rank_list</span>(</span>
-<span id="cb4-12"><a href="#cb4-12"></a>        <span class="dt">text =</span> <span class="st">&quot;Drag the items in any desired order&quot;</span>,</span>
-<span id="cb4-13"><a href="#cb4-13"></a>        <span class="dt">labels =</span> <span class="kw">list</span>(</span>
-<span id="cb4-14"><a href="#cb4-14"></a>          <span class="st">&quot;one&quot;</span>,</span>
-<span id="cb4-15"><a href="#cb4-15"></a>          <span class="st">&quot;two&quot;</span>,</span>
-<span id="cb4-16"><a href="#cb4-16"></a>          <span class="st">&quot;three&quot;</span>,</span>
-<span id="cb4-17"><a href="#cb4-17"></a>          <span class="st">&quot;four&quot;</span>,</span>
-<span id="cb4-18"><a href="#cb4-18"></a>          <span class="st">&quot;five&quot;</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a>        ),</span>
-<span id="cb4-20"><a href="#cb4-20"></a>        <span class="dt">input_id =</span> <span class="st">&quot;rank_list_1&quot;</span>,</span>
-<span id="cb4-21"><a href="#cb4-21"></a>        <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;default-sortable&quot;</span>, <span class="st">&quot;custom-sortable&quot;</span>) <span class="co"># add custom style</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a>      ),</span>
-<span id="cb4-23"><a href="#cb4-23"></a>      tags<span class="op">$</span><span class="kw">style</span>(</span>
-<span id="cb4-24"><a href="#cb4-24"></a>        <span class="kw">HTML</span>(<span class="st">&quot;</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="st">          .rank-list-container.custom-sortable {</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="st">            background-color: #8A8;</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a><span class="st">          }</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="st">          .custom-sortable .rank-list-item {</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a><span class="st">            background-color: #BDB;</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="st">          }</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a><span class="st">        &quot;</span>)</span>
-<span id="cb4-32"><a href="#cb4-32"></a>      ),</span>
-<span id="cb4-33"><a href="#cb4-33"></a>      tags<span class="op">$</span><span class="kw">b</span>(<span class="st">&quot;Result&quot;</span>),</span>
-<span id="cb4-34"><a href="#cb4-34"></a>      <span class="kw">verbatimTextOutput</span>(<span class="st">&quot;results&quot;</span>)</span>
-<span id="cb4-35"><a href="#cb4-35"></a>    )</span>
-<span id="cb4-36"><a href="#cb4-36"></a>  )</span>
-<span id="cb4-37"><a href="#cb4-37"></a>)</span>
-<span id="cb4-38"><a href="#cb4-38"></a></span>
-<span id="cb4-39"><a href="#cb4-39"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
-<span id="cb4-40"><a href="#cb4-40"></a>  output<span class="op">$</span>results &lt;-<span class="st"> </span><span class="kw">renderPrint</span>({</span>
-<span id="cb4-41"><a href="#cb4-41"></a>    input<span class="op">$</span>rank_list_<span class="dv">1</span> <span class="co"># This matches the input_id of the rank list</span></span>
-<span id="cb4-42"><a href="#cb4-42"></a>  })</span>
-<span id="cb4-43"><a href="#cb4-43"></a>}</span>
-<span id="cb4-44"><a href="#cb4-44"></a></span>
-<span id="cb4-45"><a href="#cb4-45"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">## Example shiny app with custom css</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="kw">library</span>(shiny)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="kw">library</span>(sortable)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>ui &lt;-<span class="st"> </span><span class="kw">fluidPage</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>  <span class="kw">fluidRow</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>    <span class="kw">column</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>      <span class="dt">width =</span> <span class="dv">12</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>      tags<span class="op">$</span><span class="kw">b</span>(<span class="st">&quot;Exercise&quot;</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>      <span class="kw">rank_list</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>        <span class="dt">text =</span> <span class="st">&quot;Drag the items in any desired order&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>        <span class="dt">labels =</span> <span class="kw">list</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>          <span class="st">&quot;one&quot;</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>          <span class="st">&quot;two&quot;</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>          <span class="st">&quot;three&quot;</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>          <span class="st">&quot;four&quot;</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>          <span class="st">&quot;five&quot;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>        ),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>        <span class="dt">input_id =</span> <span class="st">&quot;rank_list_1&quot;</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>        <span class="dt">class =</span> <span class="kw">c</span>(<span class="st">&quot;default-sortable&quot;</span>, <span class="st">&quot;custom-sortable&quot;</span>) <span class="co"># add custom style</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>      ),</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a>      tags<span class="op">$</span><span class="kw">style</span>(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a>        <span class="kw">HTML</span>(<span class="st">&quot;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a><span class="st">          .rank-list-container.custom-sortable {</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a><span class="st">            background-color: #8A8;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a><span class="st">          }</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a><span class="st">          .custom-sortable .rank-list-item {</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="st">            background-color: #BDB;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="st">          }</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a><span class="st">        &quot;</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a>      ),</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a>      tags<span class="op">$</span><span class="kw">b</span>(<span class="st">&quot;Result&quot;</span>),</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a>      <span class="kw">verbatimTextOutput</span>(<span class="st">&quot;results&quot;</span>)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a>    )</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true"></a>  )</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true"></a>)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true"></a>server &lt;-<span class="st"> </span><span class="cf">function</span>(input, output) {</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true"></a>  output<span class="op">$</span>results &lt;-<span class="st"> </span><span class="kw">renderPrint</span>({</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true"></a>    input<span class="op">$</span>rank_list_<span class="dv">1</span> <span class="co"># This matches the input_id of the rank list</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true"></a>  })</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true"></a>}</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true"></a><span class="kw">shinyApp</span>(ui, server)</span></code></pre></div>
 </div>
 
 
