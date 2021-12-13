@@ -37,7 +37,10 @@ is_add_rank_list <- function(x) {
 #' @template options
 #'
 #' @param header Text that appears at the top of the bucket list.  (This is
-#'   encoded as an HTML `<p>` tag, so not strictly speaking a header.)
+#'   encoded as an HTML `<p>` tag, so not strictly speaking a header.)  Note
+#'   that you must explicitly provide `header` argument, especially in the case
+#'   where you want the header to be empty - to do this use `header = NULL` or
+#'   `header = NA`.
 #'
 #' @param ... One or more specifications for a rank list, and must be defined by
 #'   [add_rank_list].
@@ -56,6 +59,7 @@ is_add_rank_list <- function(x) {
 #' @return A list with class `bucket_list`
 #' @seealso rank_list
 #' @export
+#'
 #' @example inst/examples/example_bucket_list.R
 #' @examples
 #' ## Example of a shiny app
@@ -73,7 +77,8 @@ bucket_list <- function(
   orientation = c("horizontal", "vertical")
 ) {
 
-  # assert_that(is_header(header))
+  assert_that(is_header(header))
+  if (isTRUE(is.na(header))) header <- NULL
 
   assert_that(is_sortable_options(options))
   if (missing(group_name) || is.null(group_name)) {
@@ -86,7 +91,11 @@ bucket_list <- function(
 
   # capture the dots
   ellipsis::check_dots_unnamed()
-  dot_vals <- list(...)
+  dot_vals <- rlang::list2(...)
+
+  # Remove any NULL elements
+  dot_vals <- dot_vals[!vapply(dot_vals, is.null, FUN.VALUE = logical(1))]
+
   # modify the dots by adding the group_name to the sortable options
   dots <- lapply(seq_along(dot_vals), function(i) {
     dot <- dot_vals[[i]]

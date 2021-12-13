@@ -1,7 +1,7 @@
 Type: Package
 Package: sortable
 Title: Drag-and-Drop in 'shiny' Apps with 'SortableJS'
-Version: 0.4.4
+Version: 0.4.5
 Authors@R: 
     c(person(given = "Andrie",
              family = "de Vries",
@@ -28,20 +28,19 @@ Description: Enables drag-and-drop behaviour in Shiny apps, by exposing the
     R Markdown. In addition, provides a custom 'learnr' question type - 
     'question_rank()' - that allows ranking questions with drag-and-drop.
 License: MIT + file LICENSE
-URL: https://github.com/rstudio/sortable,
-        https://rstudio.github.io/sortable/
+URL: https://rstudio.github.io/sortable/
 BugReports: https://github.com/rstudio/sortable/issues
 Imports: htmltools, htmlwidgets, learnr (>= 0.10.0), shiny, assertthat,
-        jsonlite, utils, ellipsis
+        jsonlite, utils, ellipsis, rlang
 Suggests: base64, knitr, testthat (>= 2.1.0), withr, rmarkdown,
         magrittr, webshot, spelling, covr
 VignetteBuilder: knitr
 Encoding: UTF-8
-LazyData: TRUE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Language: en-US
+Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2020-09-17 16:58:18 UTC; apdev
+Packaged: 2021-12-13 09:40:53 UTC; apdev
 Author: Andrie de Vries [cre, aut],
   Barret Schloerke [aut],
   Kenton Russell [aut, ccp] (Original author),
@@ -50,4 +49,4 @@ Author: Andrie de Vries [cre, aut],
     https://sortablejs.github.io/Sortable/)
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-09-17 18:00:03 UTC
+Date/Publication: 2021-12-13 10:00:02 UTC
