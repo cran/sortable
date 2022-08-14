@@ -1,7 +1,7 @@
 Type: Package
 Package: sortable
 Title: Drag-and-Drop in 'shiny' Apps with 'SortableJS'
-Version: 0.4.5
+Version: 0.4.6
 Authors@R: 
     c(person(given = "Andrie",
              family = "de Vries",
@@ -36,11 +36,11 @@ Suggests: base64, knitr, testthat (>= 2.1.0), withr, rmarkdown,
         magrittr, webshot, spelling, covr
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Language: en-US
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2021-12-13 09:40:53 UTC; apdev
+Packaged: 2022-08-14 19:00:37 UTC; apdev
 Author: Andrie de Vries [cre, aut],
   Barret Schloerke [aut],
   Kenton Russell [aut, ccp] (Original author),
@@ -49,4 +49,4 @@ Author: Andrie de Vries [cre, aut],
     https://sortablejs.github.io/Sortable/)
 Maintainer: Andrie de Vries <apdevries@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-12-13 10:00:02 UTC
+Date/Publication: 2022-08-14 19:40:02 UTC
