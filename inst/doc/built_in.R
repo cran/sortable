@@ -93,7 +93,7 @@ knitr::read_chunk(
 #    )
 #  )
 #  
-#  server <- function(input, output) {
+#  server <- function(input, output, session) {
 #    output$results_basic <- renderPrint({
 #      input$rank_list_basic # This matches the input_id of the rank list
 #    })
@@ -128,7 +128,6 @@ knitr::read_chunk(
 #  
 #  library(shiny)
 #  library(sortable)
-#  
 #  
 #  ui <- fluidPage(
 #    tags$head(
@@ -185,7 +184,7 @@ knitr::read_chunk(
 #    )
 #  )
 #  
-#  server <- function(input,output) {
+#  server <- function(input, output, session) {
 #    output$results_1 <-
 #      renderPrint(
 #        input$rank_list_1 # This matches the input_id of the first rank list
@@ -198,6 +197,7 @@ knitr::read_chunk(
 #      renderPrint(
 #        input$bucket_list_group # Matches the group_name of the bucket list
 #      )
+#  
 #  }
 #  
 #  

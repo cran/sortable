@@ -9,7 +9,7 @@ library(sortable)
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  sortable_js(
-#    "sort1"
+#    "sort1",
 #    options = sortable_options(
 #      group = list(
 #        pull = "clone",

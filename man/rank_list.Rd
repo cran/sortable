@@ -8,8 +8,9 @@ rank_list(
   text = "",
   labels,
   input_id,
-  css_id = NULL,
+  css_id = input_id,
   options = sortable_options(),
+  orientation = c("vertical", "horizontal"),
   class = "default-sortable"
 )
 }
@@ -23,10 +24,16 @@ label or label name will be used to set the shiny \code{input_id} value.}
 \item{input_id}{output variable to read the plot/image from.}
 
 \item{css_id}{This is the css id to use, and must be unique in your shiny
-app. If NULL, the function generates an id of the form
+app. This defaults to the value of \code{input_id}, and will be appended to the
+value "rank-list-container", to ensure the CSS id is unique for the
+container as well as the labels.
+If NULL, the function generates an id of the form
 \code{rank_list_id_1}, and will automatically increment for every \code{rank_list}.}
 
 \item{options}{Options to be supplied to \link{sortable_js} object. See \link{sortable_options} for more details}
+
+\item{orientation}{Set this to "horizontal" to get horizontal orientation of
+the items.}
 
 \item{class}{A css class applied to the rank list.  This can be used to
 define custom styling.}
@@ -90,5 +97,5 @@ if (interactive()) {
 
 }
 \seealso{
-\link{sortable_js}, \link{bucket_list} and \link{question_rank}
+\link{update_rank_list}, \link{sortable_js}, \link{bucket_list} and \link{question_rank}
 }

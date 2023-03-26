@@ -4,7 +4,6 @@
 library(shiny)
 library(sortable)
 
-
 ui <- fluidPage(
   tags$head(
     tags$style(HTML(".bucket-list-container {min-height: 350px;}"))
@@ -60,7 +59,7 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input,output) {
+server <- function(input, output, session) {
   output$results_1 <-
     renderPrint(
       input$rank_list_1 # This matches the input_id of the first rank list
@@ -73,6 +72,7 @@ server <- function(input,output) {
     renderPrint(
       input$bucket_list_group # Matches the group_name of the bucket list
     )
+
 }
 
 

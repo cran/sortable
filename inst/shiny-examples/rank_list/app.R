@@ -71,7 +71,7 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   output$results_basic <- renderPrint({
     input$rank_list_basic # This matches the input_id of the rank list
   })

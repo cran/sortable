@@ -28,18 +28,17 @@ tagList(
   sortable_js("example02")
 )
 
-## ---- collapse=TRUE-----------------------------------------------------------
-library(base64)
+## -----------------------------------------------------------------------------
+library(base64enc)
 library(withr)
 
-# use example from ?base64::img
+# create two plots for demo purposes
 pngfile_1 <- tempfile(fileext = ".png")
 with_png(pngfile_1, width = 300, height = 200,{
   plot(1:100, rnorm(100), pch = 21, bg = "red")
   title(main = "Moves Like Jagger")
 })
 
-# make another plot for demo purposes
 pngfile_2 <- tempfile(fileext = ".png")
 with_png(pngfile_2, width = 300, height = 200,{
   barplot(1:9, col = blues9)
@@ -50,8 +49,8 @@ with_png(pngfile_2, width = 300, height = 200,{
 tagList(
   tags$div(
     id = "example03",
-    HTML(base64::img(pngfile_1)),
-    HTML(base64::img(pngfile_2))
+    tags$image(src = base64enc::dataURI(file = pngfile_1, mime = "image/png")),
+    tags$image(src = base64enc::dataURI(file = pngfile_2, mime = "image/png"))
   ),
   sortable_js(css_id = "example03")
 )

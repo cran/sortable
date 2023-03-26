@@ -8,6 +8,7 @@ bucket_list(
   header = NULL,
   ...,
   group_name,
+  css_id = group_name,
   group_put_max = rep(Inf, length(labels)),
   options = sortable_options(),
   class = "default-sortable",
@@ -26,6 +27,11 @@ where you want the header to be empty - to do this use \code{header = NULL} or
 
 \item{group_name}{Passed to \code{SortableJS} as the group name. Also the input
 value set in Shiny. (\code{input[[group_name]]})}
+
+\item{css_id}{This is the css id to use, and must be unique in your shiny
+app. This defaults to the value of \code{group_id}, and will be appended to the
+value "bucket-list-container", to ensure the CSS id is unique for the
+container as well as the embedded rank lists.}
 
 \item{group_put_max}{Not yet implemented}
 
@@ -82,10 +88,13 @@ if(interactive()) {
 }
 ## Example of a shiny app
 if (interactive()) {
-  app <- system.file("shiny-examples/bucket_list/app.R", package = "sortable")
+  app <- system.file(
+    "shiny-examples/bucket_list/app.R",
+    package = "sortable"
+  )
   shiny::runApp(app)
 }
 }
 \seealso{
-rank_list
+\link{rank_list}, \link{update_rank_list}
 }
